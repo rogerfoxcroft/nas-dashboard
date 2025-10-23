@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAS Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>NAS Dashboard</h1>
+        <p>Quick links to the services running on your Synology.</p>
+      </header>
+      <section class="grid">
+        <a class="app-card" data-port="32400" data-path="/web" data-name="Plex">
+          <div class="app-icon plex" aria-hidden="true">
+            <svg viewBox="0 0 100 100" role="presentation">
+              <path d="M38 18L70 50L38 82V18Z" />
+            </svg>
+          </div>
+          <div class="app-name">Plex</div>
+          <div class="app-meta">Stream your media library.</div>
+        </a>
+        <a class="app-card" data-port="9091" data-name="Transmission">
+          <div class="app-icon transmission" aria-hidden="true">
+            <svg viewBox="0 0 100 100" role="presentation">
+              <rect x="20" y="28" width="60" height="44" rx="6" />
+              <path d="M40 20H60V30H40V20Z" />
+              <path d="M50 38L62 58H38L50 38Z" />
+            </svg>
+          </div>
+          <div class="app-name">Transmission</div>
+          <div class="app-meta">Manage downloads at a glance.</div>
+        </a>
+        <a class="app-card" data-port="7878" data-name="Radarr">
+          <div class="app-icon radarr" aria-hidden="true">
+            <svg viewBox="0 0 100 100" role="presentation">
+              <circle cx="50" cy="50" r="30" />
+              <path d="M50 24L56 44L76 50L56 56L50 76L44 56L24 50L44 44L50 24Z" />
+            </svg>
+          </div>
+          <div class="app-name">Radarr</div>
+          <div class="app-meta">Automate movie downloads.</div>
+        </a>
+        <a class="app-card" data-port="8989" data-name="Sonarr">
+          <div class="app-icon sonarr" aria-hidden="true">
+            <svg viewBox="0 0 100 100" role="presentation">
+              <circle cx="50" cy="50" r="32" />
+              <circle cx="50" cy="50" r="18" />
+              <path d="M50 20V32M50 68V80M20 50H32M68 50H80" />
+            </svg>
+          </div>
+          <div class="app-name">Sonarr</div>
+          <div class="app-meta">Handle TV series downloads.</div>
+        </a>
+      </section>
+    </main>
+    <footer>
+      <small>&copy; <span id="year"></span> NAS Dashboard</small>
+    </footer>
+    <script>
+      (function () {
+        const { protocol, hostname } = window.location;
+        const cards = document.querySelectorAll('.app-card');
+        cards.forEach((card) => {
+          const port = card.getAttribute('data-port');
+          const path = card.getAttribute('data-path') || '';
+          const url = `${protocol}//${hostname}:${port}${path}`;
+          card.setAttribute('href', url);
+          card.setAttribute('title', `Open ${card.getAttribute('data-name')} (${url})`);
+        });
+        document.getElementById('year').textContent = new Date().getFullYear();
+      })();
+    </script>
+  </body>
+</html>
