@@ -75,11 +75,14 @@
         const { protocol, hostname } = window.location;
         const cards = document.querySelectorAll('.app-card');
         cards.forEach((card) => {
+          const appName = card.getAttribute('data-name') || 'app';
           const port = card.getAttribute('data-port');
           const path = card.getAttribute('data-path') || '';
+          const windowTarget = appName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'app';
           const url = `${protocol}//${hostname}:${port}${path}`;
           card.setAttribute('href', url);
-          card.setAttribute('title', `Open ${card.getAttribute('data-name')} (${url})`);
+          card.setAttribute('target', windowTarget);
+          card.setAttribute('title', `Open ${appName} (${url})`);
         });
         document.getElementById('year').textContent = new Date().getFullYear();
       })();
