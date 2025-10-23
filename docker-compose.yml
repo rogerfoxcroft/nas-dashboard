@@ -4,5 +4,5 @@ services:
     image: nas-dashboard:latest
     container_name: nas-dashboard
     ports:
-      - "80:80"
+      - "8080:80"
     restart: unless-stopped
