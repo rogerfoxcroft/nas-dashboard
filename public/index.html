@@ -13,7 +13,7 @@
         <p>Quick links to the services running on your Synology.</p>
       </header>
       <section class="grid">
-        <a class="app-card" data-port="5000" data-name="Synology DSM">
+        <a class="app-card" data-name="Synology DSM">
           <div class="app-icon dsm" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <rect x="20" y="20" width="60" height="60" rx="14" />
@@ -24,7 +24,7 @@
           <div class="app-name">Synology DSM</div>
           <div class="app-meta">Open the NAS administration portal.</div>
         </a>
-        <a class="app-card" data-port="32400" data-path="/web" data-name="Plex">
+        <a class="app-card" data-name="Plex">
           <div class="app-icon plex" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <path d="M38 18L70 50L38 82V18Z" />
@@ -33,7 +33,7 @@
           <div class="app-name">Plex</div>
           <div class="app-meta">Stream your media library.</div>
         </a>
-        <a class="app-card" data-port="9091" data-name="Transmission">
+        <a class="app-card" data-name="Transmission">
           <div class="app-icon transmission" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <rect x="20" y="28" width="60" height="44" rx="6" />
@@ -44,7 +44,7 @@
           <div class="app-name">Transmission</div>
           <div class="app-meta">Manage downloads at a glance.</div>
         </a>
-        <a class="app-card" data-port="7878" data-name="Radarr">
+        <a class="app-card" data-name="Radarr">
           <div class="app-icon radarr" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <circle cx="50" cy="50" r="30" />
@@ -54,7 +54,7 @@
           <div class="app-name">Radarr</div>
           <div class="app-meta">Automate movie downloads.</div>
         </a>
-        <a class="app-card" data-port="8989" data-name="Sonarr">
+        <a class="app-card" data-name="Sonarr">
           <div class="app-icon sonarr" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <circle cx="50" cy="50" r="32" />
@@ -65,7 +65,7 @@
           <div class="app-name">Sonarr</div>
           <div class="app-meta">Handle TV series downloads.</div>
         </a>
-        <a class="app-card" data-port="9117" data-name="Jackett">
+        <a class="app-card" data-name="Jackett">
           <div class="app-icon jackett" aria-hidden="true">
             <svg viewBox="0 0 100 100" role="presentation">
               <path d="M50 16L78 32V68L50 84L22 68V32L50 16Z" />
@@ -81,17 +81,29 @@
     <footer>
       <small>&copy; <span id="year"></span> NAS Dashboard</small>
     </footer>
+    <script src="apps.js"></script>
     <script>
       (function () {
+        const apps = window.NAS_APPS || [];
+        const appMap = new Map(apps.map((app) => [app.name.toLowerCase(), app]));
         const { protocol, hostname } = window.location;
         const cards = document.querySelectorAll('.app-card');
         cards.forEach((card) => {
           const appName = card.getAttribute('data-name') || 'app';
-          const port = card.getAttribute('data-port');
-          const path = card.getAttribute('data-path') || '';
+          const appConfig = appMap.get(appName.toLowerCase());
+          const port = appConfig?.port;
+          const path = appConfig?.path || '';
+          if (!port) {
+            return;
+          }
           const url = `${protocol}//${hostname}:${port}${path}`;
-          const appLink = `app.html?app=${encodeURIComponent(appName)}`;
+          const openInNewTab = Boolean(appConfig?.openInNewTab);
+          const appLink = openInNewTab ? url : `app.html?app=${encodeURIComponent(appName)}`;
           card.setAttribute('href', appLink);
+          if (openInNewTab) {
+            card.setAttribute('target', '_blank');
+            card.setAttribute('rel', 'noopener');
+          }
           card.setAttribute('title', `Open ${appName} (${url})`);
         });
         document.getElementById('year').textContent = new Date().getFullYear();

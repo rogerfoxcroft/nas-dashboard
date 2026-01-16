@@ -14,16 +14,13 @@
     <main class="app-frame">
       <iframe id="app-frame" title="NAS application" loading="lazy"></iframe>
     </main>
+    <script src="apps.js"></script>
     <script>
       (function () {
-        const apps = [
-          { name: 'Synology DSM', port: '5000' },
-          { name: 'Plex', port: '32400', path: '/web' },
-          { name: 'Transmission', port: '9091' },
-          { name: 'Radarr', port: '7878' },
-          { name: 'Sonarr', port: '8989' },
-          { name: 'Jackett', port: '9117' },
-        ];
+        const apps = window.NAS_APPS || [];
+        if (!apps.length) {
+          return;
+        }
 
         const { protocol, hostname } = window.location;
         const nav = document.getElementById('app-nav');
@@ -31,16 +28,27 @@
         const params = new URLSearchParams(window.location.search);
         const requestedApp = params.get('app');
 
-        let activeApp = apps[0];
+        let activeApp = apps.find((app) => !app.openInNewTab) || apps[0];
 
         apps.forEach((app) => {
           const link = document.createElement('a');
           link.className = 'app-nav-link';
           link.textContent = app.name;
-          link.href = `app.html?app=${encodeURIComponent(app.name)}`;
+          const appUrl = `${protocol}//${hostname}:${app.port}${app.path || ''}`;
+          if (app.openInNewTab) {
+            link.href = appUrl;
+            link.target = '_blank';
+            link.rel = 'noopener';
+          } else {
+            link.href = `app.html?app=${encodeURIComponent(app.name)}`;
+          }
           nav.appendChild(link);
 
-          if (requestedApp && app.name.toLowerCase() === requestedApp.toLowerCase()) {
+          if (
+            requestedApp &&
+            app.name.toLowerCase() === requestedApp.toLowerCase() &&
+            !app.openInNewTab
+          ) {
             activeApp = app;
           }
         });
