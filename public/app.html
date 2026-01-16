@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAS Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app-shell">
+    <header class="app-topbar">
+      <a class="home-link" href="index.html">← Back to dashboard</a>
+      <nav class="app-nav" id="app-nav" aria-label="NAS applications"></nav>
+    </header>
+    <main class="app-frame">
+      <iframe id="app-frame" title="NAS application" loading="lazy"></iframe>
+    </main>
+    <script>
+      (function () {
+        const apps = [
+          { name: 'Synology DSM', port: '5000' },
+          { name: 'Plex', port: '32400', path: '/web' },
+          { name: 'Transmission', port: '9091' },
+          { name: 'Radarr', port: '7878' },
+          { name: 'Sonarr', port: '8989' },
+          { name: 'Jackett', port: '9117' },
+        ];
+
+        const { protocol, hostname } = window.location;
+        const nav = document.getElementById('app-nav');
+        const frame = document.getElementById('app-frame');
+        const params = new URLSearchParams(window.location.search);
+        const requestedApp = params.get('app');
+
+        let activeApp = apps[0];
+
+        apps.forEach((app) => {
+          const link = document.createElement('a');
+          link.className = 'app-nav-link';
+          link.textContent = app.name;
+          link.href = `app.html?app=${encodeURIComponent(app.name)}`;
+          nav.appendChild(link);
+
+          if (requestedApp && app.name.toLowerCase() === requestedApp.toLowerCase()) {
+            activeApp = app;
+          }
+        });
+
+        const appUrl = `${protocol}//${hostname}:${activeApp.port}${activeApp.path || ''}`;
+        frame.src = appUrl;
+        frame.title = `${activeApp.name} application`;
+        document.title = `${activeApp.name} | NAS Dashboard`;
+
+        const links = nav.querySelectorAll('.app-nav-link');
+        links.forEach((link) => {
+          if (link.textContent === activeApp.name) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
