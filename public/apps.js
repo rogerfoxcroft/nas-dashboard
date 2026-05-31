@@ -5,4 +5,5 @@ window.NAS_APPS = [
   { name: 'Radarr', port: '7878' },
   { name: 'Sonarr', port: '8989' },
   { name: 'Jackett', port: '9117' },
+  { name: 'Sportarr', port: '1867' },
 ];
