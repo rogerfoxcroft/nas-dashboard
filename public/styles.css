@@ -169,7 +169,8 @@ header p {
 }
 
 .app-icon.sonarr svg path,
-.app-icon.radarr svg path {
+.app-icon.radarr svg path,
+.app-icon.sportarr svg path {
   fill: none;
   stroke: currentColor;
   stroke-width: 8;
@@ -223,6 +224,11 @@ header p {
 .app-icon.jackett {
   background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.15));
   color: #34d399;
+}
+
+.app-icon.sportarr {
+  background: radial-gradient(circle at top left, rgba(163, 230, 53, 0.4), rgba(101, 163, 13, 0.15));
+  color: #a3e635;
 }
 
 .app-icon.dsm svg rect {
